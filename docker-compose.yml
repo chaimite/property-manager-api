@@ -9,6 +9,7 @@ services:
       POSTGRES_DB: property_list
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+  #docker-compose up pgadmin
   app:
     build:
       context: .
