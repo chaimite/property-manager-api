@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PropertiesModule } from './properties/properties.module';
+import { Property } from './properties/entities/property.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { PropertiesModule } from './properties/properties.module';
       port: 5432,
       password: 'simform',
       username: 'adriano',
-      entities: [],
+      entities: [Property],
       database: 'pgWithNest',
       synchronize: true, // don't use in prod or can lose prod data
       logging: true,
