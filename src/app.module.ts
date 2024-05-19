@@ -12,8 +12,8 @@ import { Property } from './properties/entities/property.entity';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      password: 'simform',
-      username: 'adriano',
+      password: 'password',
+      username: 'postgres',
       entities: [Property],
       database: 'pgWithNest',
       synchronize: true, // don't use in prod or can lose prod data
