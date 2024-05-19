@@ -1,10 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { PropertyStatus, PropertyType } from '../enums/property.enums';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity()
 export class Property {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', length: 90 })
   description: string;
@@ -23,4 +24,11 @@ export class Property {
 
   @Column({ type: 'date' })
   contract_ending_at: Date;
+
+  @BeforeInsert()
+  generateId() {
+    if (this.id) {
+      this.id = uuidv4();
+    }
+  }
 }

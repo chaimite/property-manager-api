@@ -26,12 +26,12 @@ export class PropertiesService {
     return this.propertyRepository.find();
   }
 
-  findProperty(id: number): Promise<Property> {
+  findProperty(id: string): Promise<Property> {
     return this.propertyRepository.findOneBy({ id });
   }
 
   updateProperty(
-    id: number,
+    id: string,
     updatePropertyDto: UpdatePropertyDto,
   ): Promise<Property> {
     const property: Property = new Property();
@@ -45,7 +45,7 @@ export class PropertiesService {
     return this.propertyRepository.save(property);
   }
 
-  removeProperty(id: number): Promise<{ affected?: number }> {
+  removeProperty(id: string): Promise<{ affected?: number }> {
     return this.propertyRepository.delete(id);
   }
 }

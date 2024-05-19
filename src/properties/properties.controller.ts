@@ -27,7 +27,7 @@ export class PropertiesController {
 
   @Get(':id')
   findOneProperty(@Param('id') id: string) {
-    return this.propertiesService.findProperty(+id);
+    return this.propertiesService.findProperty(id);
   }
 
   @Patch(':id')
@@ -35,11 +35,11 @@ export class PropertiesController {
     @Param('id') id: string,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    return this.propertiesService.updateProperty(+id, updatePropertyDto);
+    return this.propertiesService.updateProperty(id, updatePropertyDto);
   }
 
   @Delete(':id')
   removeOneProperty(@Param('id') id: string) {
-    return this.propertiesService.removeProperty(+id);
+    return this.propertiesService.removeProperty(id);
   }
 }
