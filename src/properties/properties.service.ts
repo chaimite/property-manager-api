@@ -4,7 +4,7 @@ import { UpdatePropertyDto } from './dto/update-property.dto';
 
 @Injectable()
 export class PropertiesService {
-  create(createPropertyDto: CreatePropertyDto) {
+  createOneProperty(createPropertyDto: CreatePropertyDto) {
     return 'This action adds a new property';
   }
 

@@ -17,21 +17,21 @@ export class PropertiesController {
 
   @Post()
   create(@Body() createPropertyDto: CreatePropertyDto) {
-    return this.propertiesService.create(createPropertyDto);
+    return this.propertiesService.createOneProperty(createPropertyDto);
   }
 
   @Get()
-  findAll() {
+  findAllProperties() {
     return this.propertiesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOneProperty(@Param('id') id: string) {
     return this.propertiesService.findOne(+id);
   }
 
   @Patch(':id')
-  update(
+  updateOneProperty(
     @Param('id') id: string,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
@@ -39,7 +39,7 @@ export class PropertiesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  removeOneProperty(@Param('id') id: string) {
     return this.propertiesService.remove(+id);
   }
 }
