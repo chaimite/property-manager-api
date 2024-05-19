@@ -9,7 +9,8 @@ services:
       POSTGRES_DB: property_list
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-  #docker-compose up pgadmin
+    command: ["postgres", "-c", "listen_addresses=0.0.0.0"]
+  #docker-compose up db
   app:
     build:
       context: .
@@ -25,6 +26,7 @@ services:
       - DATABASE_NAME=property_list
     depends_on:
       - db
+    command: ["./wait-for-db.bat", "db", "npm", "run", "start"]
 
   pgadmin:
     image: dpage/pgadmin4
@@ -37,6 +39,7 @@ services:
       - '5050:80'
     depends_on:
       - db
+ #docker-compose up pgadmin
 
 
 volumes:
