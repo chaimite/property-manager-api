@@ -17,17 +17,17 @@ export class PropertiesController {
 
   @Post()
   create(@Body() createPropertyDto: CreatePropertyDto) {
-    return this.propertiesService.createOneProperty(createPropertyDto);
+    return this.propertiesService.createProperty(createPropertyDto);
   }
 
   @Get()
   findAllProperties() {
-    return this.propertiesService.findAll();
+    return this.propertiesService.findAllProperties();
   }
 
   @Get(':id')
   findOneProperty(@Param('id') id: string) {
-    return this.propertiesService.findOne(+id);
+    return this.propertiesService.findProperty(+id);
   }
 
   @Patch(':id')
@@ -35,11 +35,11 @@ export class PropertiesController {
     @Param('id') id: string,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    return this.propertiesService.update(+id, updatePropertyDto);
+    return this.propertiesService.updateProperty(+id, updatePropertyDto);
   }
 
   @Delete(':id')
   removeOneProperty(@Param('id') id: string) {
-    return this.propertiesService.remove(+id);
+    return this.propertiesService.removeProperty(+id);
   }
 }

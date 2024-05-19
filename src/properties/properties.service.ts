@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Property } from './entities/property.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PropertiesService {
-  createOneProperty(createPropertyDto: CreatePropertyDto) {
-    return 'This action adds a new property';
+  constructor(
+    @InjectRepository(Property)
+    private readonly propertyRepository: Repository<Property>,
+  ) {}
+  createProperty(createPropertyDto: CreatePropertyDto): Promise<Property> {
+    const property: Property = new Property();
+    property.description = createPropertyDto.description;
+    property.location = createPropertyDto.location;
+    property.status = createPropertyDto.status;
+    property.type = createPropertyDto.type;
+    property.contract_begin_at = createPropertyDto.contract_begin_at;
+    property.contract_ending_at = createPropertyDto.contract_ending_at;
+    return this.propertyRepository.save(property);
   }
 
-  findAll() {
-    return `This action returns all properties`;
+  findAllProperties(): Promise<Property[]> {
+    return this.propertyRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} property`;
+  findProperty(id: number): Promise<Property> {
+    return this.propertyRepository.findOneBy({ id });
   }
 
-  update(id: number, updatePropertyDto: UpdatePropertyDto) {
-    return `This action updates a #${id} property`;
+  updateProperty(
+    id: number,
+    updatePropertyDto: UpdatePropertyDto,
+  ): Promise<Property> {
+    const property: Property = new Property();
+    property.description = updatePropertyDto.description;
+    property.location = updatePropertyDto.location;
+    property.status = updatePropertyDto.status;
+    property.type = updatePropertyDto.type;
+    property.contract_begin_at = updatePropertyDto.contract_begin_at;
+    property.contract_ending_at = updatePropertyDto.contract_ending_at;
+    property.id = id;
+    return this.propertyRepository.save(property);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} property`;
+  removeProperty(id: number): Promise<{ affected?: number }> {
+    return this.propertyRepository.delete(id);
   }
 }
