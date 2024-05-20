@@ -4,13 +4,13 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DB: property_list
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pgWithNest
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     command: ["postgres", "-c", "listen_addresses=0.0.0.0"]
-  #docker-compose up db
+  #docker compose up db
   app:
     build:
       context: .
@@ -21,12 +21,11 @@ services:
     environment:
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres
-      - DATABASE_NAME=property_list
+      - DATABASE_USER=admin
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=pgWithNest
     depends_on:
       - db
-    command: ["./wait-for-db.bat", "db", "npm", "run", "start"]
 
   pgadmin:
     image: dpage/pgadmin4
@@ -39,7 +38,7 @@ services:
       - '5050:80'
     depends_on:
       - db
- #docker-compose up pgadmin
+ #docker compose up pgadmin
 
 
 volumes:
