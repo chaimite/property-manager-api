@@ -46,4 +46,11 @@ describe('PropertiesController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('findAllProperties', () => {
+    it('should return an array of properties', async () => {
+      await controller.findAllProperties();
+      expect(service.findAllProperties).toHaveBeenCalled();
+    });
+  });
 });

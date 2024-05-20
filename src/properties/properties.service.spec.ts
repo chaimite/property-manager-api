@@ -43,4 +43,12 @@ describe('PropertiesService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  describe('findAllProperties', () => {
+    it('should return an array of properties', async () => {
+      const result = await service.findAllProperties();
+      expect(result).toEqual(propertyArray);
+      expect(repository.find).toHaveBeenCalled();
+    });
+  });
 });
