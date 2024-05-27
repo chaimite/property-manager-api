@@ -10,13 +10,13 @@ import { Property } from './properties/entities/property.entity';
     PropertiesModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db',
+      host: 'localhost',
       port: 5432,
-      username: 'admin',
+      username: 'postgres',
       password: 'password',
       entities: [Property],
       database: 'pgWithNest',
-      synchronize: true, // don't use in prod or can lose prod data
+      synchronize: true, // don't use true in prod or can lose prod data
       logging: true,
     }),
   ],
