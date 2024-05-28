@@ -8,16 +8,18 @@ import { Property } from './properties/entities/property.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     PropertiesModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'password',
-      entities: [Property],
+      password: 'postgres',
       database: 'pgWithNest',
+      entities: [Property],
       synchronize: true, // don't use true in prod or can lose prod data
       logging: true,
     }),
