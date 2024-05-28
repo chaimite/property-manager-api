@@ -1,5 +1,6 @@
 import { IsDate, IsEnum, IsString, Length } from 'class-validator';
 import { PropertyType, PropertyStatus } from '../enums/property.enums';
+import { Type } from 'class-transformer';
 
 export class CreatePropertyDto {
   @IsString()
@@ -16,9 +17,11 @@ export class CreatePropertyDto {
   @Length(1, 25)
   location: string;
 
+  @Type(() => Date)
   @IsDate()
   contract_begin_at: Date;
 
+  @Type(() => Date)
   @IsDate()
   contract_ending_at: Date;
 }
