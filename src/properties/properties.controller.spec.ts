@@ -1,16 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesController } from './properties.controller';
 import { PropertiesService } from './properties.service';
-const oneProperty = {
-  id: 'some-uuid',
-  description: 'Test property',
-  location: 'Test location',
-  status: 'Available',
-  type: 'Residential',
-  contract_begin_at: new Date(),
-  contract_ending_at: new Date(),
-};
-const propertyArray = [oneProperty];
+
+import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
+
+const propertyArray = ARRAY_OF_PROPERTIES;
+const oneProperty = SINGLE_PROPERTY;
 
 describe('PropertiesController', () => {
   let controller: PropertiesController;
