@@ -23,6 +23,7 @@ describe('PropertiesService', () => {
             createProperty: jest.fn().mockResolvedValue(oneProperty),
             findAllProperties: jest.fn().mockResolvedValue(propertyArray),
             findProperty: jest.fn().mockResolvedValue(oneProperty),
+            find: jest.fn().mockResolvedValue(propertyArray),
             updateProperty: jest.fn().mockResolvedValue(true),
             removeProperty: jest.fn().mockResolvedValue(true),
           },
