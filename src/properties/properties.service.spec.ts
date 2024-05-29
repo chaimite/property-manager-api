@@ -8,6 +8,7 @@ import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { PropertyStatus, PropertyType } from './enums/property.enums';
 import { UpdatePropertyDto } from './dto/update-property.dto';
+import { NotFoundException } from '@nestjs/common';
 
 const propertyArray = ARRAY_OF_PROPERTIES;
 const oneProperty = SINGLE_PROPERTY;
@@ -23,15 +24,14 @@ describe('PropertiesService', () => {
         {
           provide: getRepositoryToken(Property),
           useValue: {
-            createProperty: jest.fn().mockResolvedValue(oneProperty),
-            findAllProperties: jest.fn().mockResolvedValue(propertyArray),
-            findProperty: jest.fn().mockResolvedValue(oneProperty),
+            create: jest.fn().mockResolvedValue(oneProperty),
             findOneBy: jest.fn().mockResolvedValue(oneProperty),
             find: jest.fn().mockResolvedValue(propertyArray),
             save: jest.fn().mockResolvedValue(oneProperty),
-            updateProperty: jest.fn().mockResolvedValue(true),
-            removeProperty: jest.fn().mockResolvedValue(true),
             delete: jest.fn().mockResolvedValue({ affected: 1 }),
+            merge: jest
+              .fn()
+              .mockImplementation((entity, dto) => Object.assign(entity, dto)),
           },
         },
       ],
@@ -62,19 +62,28 @@ describe('PropertiesService', () => {
         contract_begin_at: new Date(),
         contract_ending_at: new Date(),
       };
+
       const result = await service.createProperty(createPropertyDto);
+
       expect(result).toEqual(SINGLE_PROPERTY);
-      expect(repository.save).toHaveBeenCalledWith(createPropertyDto);
+      expect(repository.create).toHaveBeenCalledWith(createPropertyDto);
     });
   });
 
   describe('findProperty', () => {
     it('should return a single property', async () => {
       const result = await service.findProperty(SINGLE_PROPERTY.id);
+
       expect(result).toEqual(SINGLE_PROPERTY);
       expect(repository.findOneBy).toHaveBeenCalledWith({
         id: SINGLE_PROPERTY.id,
       });
+    });
+    it('should throw NotFoundException if property not found', async () => {
+      jest.spyOn(repository, 'findOneBy').mockResolvedValueOnce(null);
+      await expect(service.findProperty('nonexistent-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
   describe('updateProperty', () => {
@@ -95,6 +104,12 @@ describe('PropertiesService', () => {
       expect(repository.save).toHaveBeenCalledWith(
         expect.objectContaining(updatePropertyDto),
       );
+    });
+    it('should throw NotFoundException if property not found', async () => {
+      jest.spyOn(repository, 'findOneBy').mockResolvedValueOnce(null);
+      await expect(
+        service.updateProperty('nonexistent-id', { description: 'Updated' }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
