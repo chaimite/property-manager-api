@@ -48,6 +48,7 @@ describe('PropertiesService', () => {
   describe('find', () => {
     it('should return an array of properties', async () => {
       const result = await service.findAllProperties();
+
       expect(result).toEqual(propertyArray);
       expect(repository.find).toHaveBeenCalled();
     });
@@ -81,6 +82,7 @@ describe('PropertiesService', () => {
     });
     it('should throw NotFoundException if property not found', async () => {
       jest.spyOn(repository, 'findOneBy').mockResolvedValueOnce(null);
+
       await expect(service.findProperty('nonexistent-id')).rejects.toThrow(
         NotFoundException,
       );
@@ -96,10 +98,12 @@ describe('PropertiesService', () => {
         contract_begin_at: new Date(),
         contract_ending_at: new Date(),
       };
+
       const result = await service.updateProperty(
         SINGLE_PROPERTY.id,
         updatePropertyDto,
       );
+
       expect(result).toEqual(SINGLE_PROPERTY);
       expect(repository.save).toHaveBeenCalledWith(
         expect.objectContaining(updatePropertyDto),
@@ -107,6 +111,7 @@ describe('PropertiesService', () => {
     });
     it('should throw NotFoundException if property not found', async () => {
       jest.spyOn(repository, 'findOneBy').mockResolvedValueOnce(null);
+
       await expect(
         service.updateProperty('nonexistent-id', { description: 'Updated' }),
       ).rejects.toThrow(NotFoundException);
@@ -116,6 +121,7 @@ describe('PropertiesService', () => {
   describe('removeProperty', () => {
     it('should remove a property', async () => {
       const result = await service.removeProperty(SINGLE_PROPERTY.id);
+
       expect(result).toEqual({ affected: 1 });
       expect(repository.delete).toHaveBeenCalledWith(SINGLE_PROPERTY.id);
     });
