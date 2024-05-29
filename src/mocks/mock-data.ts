@@ -1,8 +1,8 @@
-import { Property } from 'src/properties/entities/property.entity';
+import { Property } from '../properties/entities/property.entity';
 import {
   PropertyStatus,
   PropertyType,
-} from 'src/properties/enums/property.enums';
+} from '../properties/enums/property.enums';
 
 export const SINGLE_PROPERTY: Property = {
   id: '1',
