@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
+
 import { PropertiesService } from './properties.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
@@ -16,30 +18,35 @@ export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
   @Post()
-  create(@Body() createPropertyDto: CreatePropertyDto) {
-    return this.propertiesService.createProperty(createPropertyDto);
+  @ApiOperation({ summary: 'Create a property to be managed' })
+  async create(@Body() createPropertyDto: CreatePropertyDto) {
+    return await this.propertiesService.createProperty(createPropertyDto);
   }
 
   @Get()
-  findAllProperties() {
-    return this.propertiesService.findAllProperties();
+  @ApiOperation({ summary: 'Retrieves all managed properties' })
+  async findAllProperties() {
+    return await this.propertiesService.findAllProperties();
   }
 
   @Get(':id')
-  findOneProperty(@Param('id') id: string) {
-    return this.propertiesService.findProperty(id);
+  @ApiOperation({ summary: 'Finds a managed property' })
+  async findOneProperty(@Param('id') id: string) {
+    return await this.propertiesService.findProperty(id);
   }
 
   @Patch(':id')
-  updateOneProperty(
+  @ApiOperation({ summary: 'Patches data in managed property' })
+  async updateOneProperty(
     @Param('id') id: string,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    return this.propertiesService.updateProperty(id, updatePropertyDto);
+    return await this.propertiesService.updateProperty(id, updatePropertyDto);
   }
 
   @Delete(':id')
-  removeOneProperty(@Param('id') id: string) {
-    return this.propertiesService.removeProperty(id);
+  @ApiOperation({ summary: 'Deletes a managed property' })
+  async removeOneProperty(@Param('id') id: string) {
+    return await this.propertiesService.removeProperty(id);
   }
 }
