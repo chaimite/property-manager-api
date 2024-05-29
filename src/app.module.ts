@@ -20,7 +20,7 @@ import { Property } from './properties/entities/property.entity';
       password: 'postgres',
       database: 'pgWithNest',
       entities: [Property],
-      synchronize: true, // don't use true in prod or can lose prod data
+      synchronize: false, // don't use true in prod or can lose prod data
       logging: true,
     }),
   ],
