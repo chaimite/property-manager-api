@@ -31,22 +31,25 @@ export class PropertiesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Finds a managed property' })
-  async findOneProperty(@Param('id') id: string) {
-    return await this.propertiesService.findProperty(id);
+  async findOneProperty(@Param('id') id: number) {
+    return await this.propertiesService.findProperty({ id });
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Patches data in managed property' })
   async updateOneProperty(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    return await this.propertiesService.updateProperty(id, updatePropertyDto);
+    return await this.propertiesService.updateProperty({
+      where: { id },
+      data: updatePropertyDto,
+    });
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes a managed property' })
-  async removeOneProperty(@Param('id') id: string) {
-    return await this.propertiesService.removeProperty(id);
+  async removeOneProperty(@Param('id') id: number) {
+    return await this.propertiesService.removeProperty({ id });
   }
 }

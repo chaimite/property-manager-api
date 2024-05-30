@@ -1,52 +1,61 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePropertyDto } from './dto/create-property.dto';
-import { UpdatePropertyDto } from './dto/update-property.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { Property } from './entities/property.entity';
-import { Repository } from 'typeorm';
+import { PrismaService } from 'src/prisma.service';
+import { Prisma } from '@prisma/client';
+// import { prisma } from '../prisma';
 
 @Injectable()
 export class PropertiesService {
-  constructor(
-    @InjectRepository(Property)
-    private readonly propertyRepository: Repository<Property>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async createProperty(
-    createPropertyDto: CreatePropertyDto,
-  ): Promise<Property> {
-    const property: Property =
-      this.propertyRepository.create(createPropertyDto);
-    return await this.propertyRepository.save(property);
+  private formatDate(dateString: string): Date {
+    return new Date(`${dateString}T00:00:00.000Z`);
+  }
+
+  async createProperty(data: Prisma.PropertyCreateInput): Promise<Property> {
+    const formattedData = {
+      ...data,
+      contractBeginAt:
+        typeof data.contractBeginAt === 'string'
+          ? (this.formatDate(data.contractBeginAt) as unknown as string)
+          : data.contractBeginAt,
+      contractEndingAt:
+        typeof data.contractEndingAt === 'string'
+          ? (this.formatDate(data.contractEndingAt) as unknown as string)
+          : data.contractEndingAt,
+    };
+
+    return this.prisma.property.create({
+      data: formattedData,
+    });
   }
 
   async findAllProperties(): Promise<Property[]> {
-    return await this.propertyRepository.find();
+    return await this.prisma.property.findMany();
   }
 
-  async findProperty(id: string): Promise<Property> {
-    const property = await this.propertyRepository.findOneBy({ id });
-    if (!property) {
-      throw new NotFoundException(`Property with ID ${id} was not found.`);
-    }
-
-    return this.propertyRepository.findOneBy({ id });
-  }
-
-  async updateProperty(
-    id: string,
-    updatePropertyDto: UpdatePropertyDto,
+  async findProperty(
+    propertyWhereUniqueInput: Prisma.PropertyWhereUniqueInput,
   ): Promise<Property> {
-    const property = await this.findProperty(id);
-    this.propertyRepository.merge(property, updatePropertyDto);
-    return await this.propertyRepository.save(property);
+    return this.prisma.property.findUnique({
+      where: propertyWhereUniqueInput,
+    });
   }
 
-  async removeProperty(id: string): Promise<{ affected?: number }> {
-    const result = await this.propertyRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Property with ID ${id} not found`);
-    }
-    return result;
+  async updateProperty(params: {
+    where: Prisma.PropertyWhereUniqueInput;
+    data: Prisma.PropertyUpdateInput;
+  }): Promise<Property> {
+    const { where, data } = params;
+    return this.prisma.property.update({
+      data,
+      where,
+    });
+  }
+
+  async removeProperty(
+    where: Prisma.PropertyWhereUniqueInput,
+  ): Promise<Property> {
+    return await this.prisma.property.delete({ where });
   }
 }
