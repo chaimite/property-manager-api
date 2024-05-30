@@ -61,14 +61,9 @@ export class PropertiesService {
     }
   }
 
-  async removeProperty(
-    where: Prisma.PropertyWhereUniqueInput,
-  ): Promise<Property> {
-    const result = await this.prisma.property.delete({ where });
-    if (!result) {
-      throw new NotFoundException(`Could not find property to update`);
-    }
-    return result;
+  async removeProperty(where: Prisma.PropertyWhereUniqueInput): Promise<void> {
+    await this.findProperty(where);
+    await this.prisma.property.delete({ where });
   }
 
   private formatDate(dateString: string): Date {
