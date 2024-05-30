@@ -61,3 +61,6 @@ pgadmin_data/
 pgadmin_logs/
 *.log
 *.tmp
+
+# Prisma migration lock file
+migration_lock.toml
