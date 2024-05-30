@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 
@@ -51,6 +52,12 @@ export class PropertiesController {
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes a managed property' })
   async removeOneProperty(@Param('id', ParseIntPipe) id: number) {
-    return await this.propertiesService.removeProperty({ id });
+    try {
+      return await this.propertiesService.removeProperty({ id });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+    }
   }
 }
