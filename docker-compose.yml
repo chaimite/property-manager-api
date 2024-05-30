@@ -40,6 +40,10 @@ services:
     depends_on:
       - db
 #docker compose up pgadmin
+#on pgadmin 
+#host: db 
+#user: postgres 
+#password: postgres
 
 
 volumes:
