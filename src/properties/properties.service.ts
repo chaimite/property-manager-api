@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Property } from './entities/property.entity';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -48,14 +48,17 @@ export class PropertiesService {
     data: Prisma.PropertyUpdateInput;
   }): Promise<Property> {
     const { where, data } = params;
-    const result = await this.prisma.property.update({
-      data,
-      where,
-    });
-    if (!result) {
-      throw new NotFoundException(`Could not find property to update`);
+    try {
+      return await this.prisma.property.update({
+        data,
+        where,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new NotFoundException(`Could not find property to update`);
+      }
+      throw error;
     }
-    return result;
   }
 
   async removeProperty(

@@ -1,5 +1,5 @@
 import { Property } from '../properties/entities/property.entity';
-import { PropertyStatus, PropertyType } from 'prisma';
+import { PropertyStatus, PropertyType } from '@prisma/client';
 
 export const SINGLE_PROPERTY: Property = {
   id: 1,
