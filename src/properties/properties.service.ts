@@ -8,10 +8,6 @@ import { Prisma } from '@prisma/client';
 export class PropertiesService {
   constructor(private prisma: PrismaService) {}
 
-  private formatDate(dateString: string): Date {
-    return new Date(`${dateString}T00:00:00.000Z`);
-  }
-
   async createProperty(data: Prisma.PropertyCreateInput): Promise<Property> {
     const formattedData = {
       ...data,
@@ -25,7 +21,7 @@ export class PropertiesService {
           : data.contractEndingAt,
     };
 
-    return this.prisma.property.create({
+    return await this.prisma.property.create({
       data: formattedData,
     });
   }
@@ -37,7 +33,7 @@ export class PropertiesService {
   async findProperty(
     propertyWhereUniqueInput: Prisma.PropertyWhereUniqueInput,
   ): Promise<Property> {
-    return this.prisma.property.findUnique({
+    return await this.prisma.property.findUnique({
       where: propertyWhereUniqueInput,
     });
   }
@@ -47,7 +43,7 @@ export class PropertiesService {
     data: Prisma.PropertyUpdateInput;
   }): Promise<Property> {
     const { where, data } = params;
-    return this.prisma.property.update({
+    return await this.prisma.property.update({
       data,
       where,
     });
@@ -57,5 +53,9 @@ export class PropertiesService {
     where: Prisma.PropertyWhereUniqueInput,
   ): Promise<Property> {
     return await this.prisma.property.delete({ where });
+  }
+
+  private formatDate(dateString: string): Date {
+    return new Date(`${dateString}T00:00:00.000Z`);
   }
 }
