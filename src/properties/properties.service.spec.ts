@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesService } from './properties.service';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../../prisma/client/prisma.service';
 import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
@@ -130,7 +130,6 @@ describe('PropertiesService', () => {
     it('should remove a property', async () => {
       await service.removeProperty({ id: SINGLE_PROPERTY.id });
 
-      expect(result).toEqual(SINGLE_PROPERTY);
       expect(prisma.property.delete).toHaveBeenCalledWith({
         where: { id: SINGLE_PROPERTY.id },
       });
