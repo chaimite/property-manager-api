@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 
@@ -31,14 +32,14 @@ export class PropertiesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Finds a managed property' })
-  async findOneProperty(@Param('id') id: number) {
+  async findOneProperty(@Param('id', ParseIntPipe) id: number) {
     return await this.propertiesService.findProperty({ id });
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Patches data in managed property' })
   async updateOneProperty(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
     return await this.propertiesService.updateProperty({
@@ -49,7 +50,7 @@ export class PropertiesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes a managed property' })
-  async removeOneProperty(@Param('id') id: number) {
+  async removeOneProperty(@Param('id', ParseIntPipe) id: number) {
     return await this.propertiesService.removeProperty({ id });
   }
 }
