@@ -128,7 +128,7 @@ describe('PropertiesService', () => {
 
   describe('removeProperty', () => {
     it('should remove a property', async () => {
-      const result = await service.removeProperty({ id: SINGLE_PROPERTY.id });
+      await service.removeProperty({ id: SINGLE_PROPERTY.id });
 
       expect(result).toEqual(SINGLE_PROPERTY);
       expect(prisma.property.delete).toHaveBeenCalledWith({
