@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id                 Int                  @id(map: "PK_d80743e6191258a5003d5843b4f") @default(autoincrement())
+  description        String               @db.VarChar(90)
+  type               PropertyType
+  status             PropertyStatus 
+  location           String               @db.VarChar(25)
+  contractBeginAt  DateTime               @db.Date
+  contractEndingAt DateTime               @db.Date
+}
+
+enum PropertyStatus {
+  AvailableToRent
+  NotForRent
+  Sold
+  Rented
+}
+
+enum PropertyType {
+  Commercial
+  Residential
+}
