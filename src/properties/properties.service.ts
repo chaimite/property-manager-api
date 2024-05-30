@@ -45,19 +45,15 @@ export class PropertiesService {
   async updateProperty(params: {
     where: Prisma.PropertyWhereUniqueInput;
     data: Prisma.PropertyUpdateInput;
-  }): Promise<Property> {
+  }): Promise<void> {
     const { where, data } = params;
-    try {
-      return await this.prisma.property.update({
-        data,
-        where,
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new NotFoundException(`Could not find property to update`);
-      }
-      throw error;
-    }
+
+    await this.findProperty(where);
+
+    await this.prisma.property.update({
+      data,
+      where,
+    });
   }
 
   async removeProperty(where: Prisma.PropertyWhereUniqueInput): Promise<void> {

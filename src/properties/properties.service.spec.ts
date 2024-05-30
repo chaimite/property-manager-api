@@ -102,12 +102,11 @@ describe('PropertiesService', () => {
         contractEndingAt: new Date(),
       };
 
-      const result = await service.updateProperty({
+      await service.updateProperty({
         where: { id: SINGLE_PROPERTY.id },
         data: updatePropertyDto,
       });
 
-      expect(result).toEqual(SINGLE_PROPERTY);
       expect(prisma.property.update).toHaveBeenCalledWith({
         where: { id: SINGLE_PROPERTY.id },
         data: expect.objectContaining(updatePropertyDto),
