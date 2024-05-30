@@ -46,8 +46,8 @@
 //         location: 'Test location',
 //         status: PropertyStatus.Rented,
 //         type: PropertyType.Commercial,
-//         contract_begin_at: new Date(),
-//         contract_ending_at: new Date(),
+//         contractBeginAt: new Date(),
+//         contractEndingAt: new Date(),
 //       };
 //       expect(await controller.create(createPropertyDto)).toEqual(
 //         onePropertyMock,

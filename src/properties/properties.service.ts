@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Property } from './entities/property.entity';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
-// import { prisma } from '../prisma';
 
 @Injectable()
 export class PropertiesService {
@@ -33,9 +32,15 @@ export class PropertiesService {
   async findProperty(
     propertyWhereUniqueInput: Prisma.PropertyWhereUniqueInput,
   ): Promise<Property> {
-    return await this.prisma.property.findUnique({
+    const result = await this.prisma.property.findUnique({
       where: propertyWhereUniqueInput,
     });
+    if (!result) {
+      throw new NotFoundException(
+        `Could not find property with id ${propertyWhereUniqueInput}`,
+      );
+    }
+    return result;
   }
 
   async updateProperty(params: {
@@ -43,16 +48,24 @@ export class PropertiesService {
     data: Prisma.PropertyUpdateInput;
   }): Promise<Property> {
     const { where, data } = params;
-    return await this.prisma.property.update({
+    const result = await this.prisma.property.update({
       data,
       where,
     });
+    if (!result) {
+      throw new NotFoundException(`Could not find property to update`);
+    }
+    return result;
   }
 
   async removeProperty(
     where: Prisma.PropertyWhereUniqueInput,
   ): Promise<Property> {
-    return await this.prisma.property.delete({ where });
+    const result = await this.prisma.property.delete({ where });
+    if (!result) {
+      throw new NotFoundException(`Could not find property to update`);
+    }
+    return result;
   }
 
   private formatDate(dateString: string): Date {

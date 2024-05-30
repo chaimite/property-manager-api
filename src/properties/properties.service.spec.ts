@@ -1,129 +1,139 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { getRepositoryToken } from '@nestjs/typeorm';
-// import { Repository } from 'typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
+import { PropertiesService } from './properties.service';
+import { PrismaService } from '../prisma.service';
+import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
+import { CreatePropertyDto } from './dto/create-property.dto';
+import { UpdatePropertyDto } from './dto/update-property.dto';
+import { NotFoundException } from '@nestjs/common';
+import { PropertyStatus, PropertyType, Prisma } from '@prisma/client';
 
-// import { Property } from './entities/property.entity';
-// import { PropertiesService } from './properties.service';
-// import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
-// import { CreatePropertyDto } from './dto/create-property.dto';
-// import { PropertyStatus, PropertyType } from './enums/property.enums';
-// import { UpdatePropertyDto } from './dto/update-property.dto';
-// import { NotFoundException } from '@nestjs/common';
+const propertyArray = ARRAY_OF_PROPERTIES;
+const oneProperty = SINGLE_PROPERTY;
 
-// const propertyArray = ARRAY_OF_PROPERTIES;
-// const oneProperty = SINGLE_PROPERTY;
+describe('PropertiesService', () => {
+  let service: PropertiesService;
+  let prisma: PrismaService;
 
-// describe('PropertiesService', () => {
-//   let service: PropertiesService;
-//   let repository: Repository<Property>;
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PropertiesService,
+        {
+          provide: PrismaService,
+          useValue: {
+            property: {
+              create: jest.fn().mockResolvedValue(oneProperty),
+              findUnique: jest.fn().mockResolvedValue(oneProperty),
+              findMany: jest.fn().mockResolvedValue(propertyArray),
+              update: jest.fn().mockResolvedValue(oneProperty),
+              delete: jest.fn().mockResolvedValue(oneProperty),
+            },
+          },
+        },
+      ],
+    }).compile();
 
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       providers: [
-//         PropertiesService,
-//         {
-//           provide: getRepositoryToken(Property),
-//           useValue: {
-//             create: jest.fn().mockResolvedValue(oneProperty),
-//             findOneBy: jest.fn().mockResolvedValue(oneProperty),
-//             find: jest.fn().mockResolvedValue(propertyArray),
-//             save: jest.fn().mockResolvedValue(oneProperty),
-//             delete: jest.fn().mockResolvedValue({ affected: 1 }),
-//             merge: jest
-//               .fn()
-//               .mockImplementation((entity, dto) => Object.assign(entity, dto)),
-//           },
-//         },
-//       ],
-//     }).compile();
+    service = module.get<PropertiesService>(PropertiesService);
+    prisma = module.get<PrismaService>(PrismaService);
+  });
 
-//     service = module.get<PropertiesService>(PropertiesService);
-//     repository = module.get<Repository<Property>>(getRepositoryToken(Property));
-//   });
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
 
-//   it('should be defined', () => {
-//     expect(service).toBeDefined();
-//   });
+  describe('findAllProperties', () => {
+    it('should return an array of properties', async () => {
+      const result = await service.findAllProperties();
 
-//   describe('find', () => {
-//     it('should return an array of properties', async () => {
-//       const result = await service.findAllProperties();
+      expect(result).toEqual(propertyArray);
+      expect(prisma.property.findMany).toHaveBeenCalled();
+    });
+  });
 
-//       expect(result).toEqual(propertyArray);
-//       expect(repository.find).toHaveBeenCalled();
-//     });
-//   });
-//   describe('createProperty', () => {
-//     it('should create a property', async () => {
-//       const createPropertyDto: CreatePropertyDto = {
-//         description: 'Test property',
-//         location: 'Test location',
-//         status: PropertyStatus.AvailableToRent,
-//         type: PropertyType.Commercial,
-//         contract_begin_at: new Date(),
-//         contract_ending_at: new Date(),
-//       };
+  describe('createProperty', () => {
+    it('should create a property', async () => {
+      const createPropertyDto: CreatePropertyDto = {
+        description: 'Test property',
+        location: 'Test location',
+        status: PropertyStatus.AvailableToRent,
+        type: PropertyType.Commercial,
+        contractBeginAt: new Date(),
+        contractEndingAt: new Date(),
+      };
 
-//       const result = await service.createProperty(createPropertyDto);
+      const result = await service.createProperty(
+        createPropertyDto as Prisma.PropertyCreateInput,
+      );
 
-//       expect(result).toEqual(SINGLE_PROPERTY);
-//       expect(repository.create).toHaveBeenCalledWith(createPropertyDto);
-//     });
-//   });
+      expect(result).toEqual(SINGLE_PROPERTY);
+      expect(prisma.property.create).toHaveBeenCalledWith({
+        data: expect.objectContaining(createPropertyDto),
+      });
+    });
+  });
 
-//   describe('findProperty', () => {
-//     it('should return a single property', async () => {
-//       const result = await service.findProperty(SINGLE_PROPERTY.id);
+  describe('findProperty', () => {
+    it('should return a single property', async () => {
+      const result = await service.findProperty({ id: SINGLE_PROPERTY.id });
 
-//       expect(result).toEqual(SINGLE_PROPERTY);
-//       expect(repository.findOneBy).toHaveBeenCalledWith({
-//         id: SINGLE_PROPERTY.id,
-//       });
-//     });
-//     it('should throw NotFoundException if property not found', async () => {
-//       jest.spyOn(repository, 'findOneBy').mockResolvedValueOnce(null);
+      expect(result).toEqual(SINGLE_PROPERTY);
+      expect(prisma.property.findUnique).toHaveBeenCalledWith({
+        where: { id: SINGLE_PROPERTY.id },
+      });
+    });
 
-//       await expect(service.findProperty('nonexistent-id')).rejects.toThrow(
-//         NotFoundException,
-//       );
-//     });
-//   });
-//   describe('updateProperty', () => {
-//     it('should update a property', async () => {
-//       const updatePropertyDto: UpdatePropertyDto = {
-//         description: 'Updated description',
-//         location: 'Updated location',
-//         status: SINGLE_PROPERTY.status,
-//         type: SINGLE_PROPERTY.type,
-//         contract_begin_at: new Date(),
-//         contract_ending_at: new Date(),
-//       };
+    it('should throw NotFoundException if property not found', async () => {
+      jest.spyOn(prisma.property, 'findUnique').mockResolvedValueOnce(null);
 
-//       const result = await service.updateProperty(
-//         SINGLE_PROPERTY.id,
-//         updatePropertyDto,
-//       );
+      await expect(service.findProperty({ id: 999 })).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
 
-//       expect(result).toEqual(SINGLE_PROPERTY);
-//       expect(repository.save).toHaveBeenCalledWith(
-//         expect.objectContaining(updatePropertyDto),
-//       );
-//     });
-//     it('should throw NotFoundException if property not found', async () => {
-//       jest.spyOn(repository, 'findOneBy').mockResolvedValueOnce(null);
+  describe('updateProperty', () => {
+    it('should update a property', async () => {
+      const updatePropertyDto: UpdatePropertyDto = {
+        description: 'Updated description',
+        location: 'Updated location',
+        status: SINGLE_PROPERTY.status,
+        type: SINGLE_PROPERTY.type,
+        contractBeginAt: new Date(),
+        contractEndingAt: new Date(),
+      };
 
-//       await expect(
-//         service.updateProperty('nonexistent-id', { description: 'Updated' }),
-//       ).rejects.toThrow(NotFoundException);
-//     });
-//   });
+      const result = await service.updateProperty({
+        where: { id: SINGLE_PROPERTY.id },
+        data: updatePropertyDto,
+      });
 
-//   describe('removeProperty', () => {
-//     it('should remove a property', async () => {
-//       const result = await service.removeProperty(SINGLE_PROPERTY.id);
+      expect(result).toEqual(SINGLE_PROPERTY);
+      expect(prisma.property.update).toHaveBeenCalledWith({
+        where: { id: SINGLE_PROPERTY.id },
+        data: expect.objectContaining(updatePropertyDto),
+      });
+    });
 
-//       expect(result).toEqual({ affected: 1 });
-//       expect(repository.delete).toHaveBeenCalledWith(SINGLE_PROPERTY.id);
-//     });
-//   });
-// });
+    it('should throw NotFoundException if property not found', async () => {
+      jest.spyOn(prisma.property, 'findUnique').mockResolvedValueOnce(null);
+
+      await expect(
+        service.updateProperty({
+          where: { id: 999 },
+          data: { description: 'Updated' },
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('removeProperty', () => {
+    it('should remove a property', async () => {
+      const result = await service.removeProperty({ id: SINGLE_PROPERTY.id });
+
+      expect(result).toEqual(SINGLE_PROPERTY);
+      expect(prisma.property.delete).toHaveBeenCalledWith({
+        where: { id: SINGLE_PROPERTY.id },
+      });
+    });
+  });
+});
