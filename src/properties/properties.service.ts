@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Property } from './entities/property.entity';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../../prisma/client/prisma.service';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -19,7 +19,6 @@ export class PropertiesService {
           ? (this.formatDate(data.contractEndingAt) as unknown as string)
           : data.contractEndingAt,
     };
-
     return await this.prisma.property.create({
       data: formattedData,
     });
@@ -37,7 +36,7 @@ export class PropertiesService {
     });
     if (!result) {
       throw new NotFoundException(
-        `Could not find property with id ${propertyWhereUniqueInput}`,
+        `Could not find property with id ${propertyWhereUniqueInput.id}`,
       );
     }
     return result;
