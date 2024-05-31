@@ -85,7 +85,7 @@ describe('PropertiesService', () => {
     it('should throw NotFoundException if property not found', async () => {
       jest.spyOn(prisma.property, 'findUnique').mockResolvedValueOnce(null);
 
-      await expect(service.findProperty({ id: 999 })).rejects.toThrow(
+      await expect(service.findProperty({ id: '999' })).rejects.toThrow(
         NotFoundException,
       );
     });
@@ -118,7 +118,7 @@ describe('PropertiesService', () => {
 
       await expect(
         service.updateProperty({
-          where: { id: 999 },
+          where: { id: '999' },
           data: { description: 'Updated the description' },
         }),
       ).rejects.toThrow(NotFoundException);

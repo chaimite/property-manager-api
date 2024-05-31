@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Property } from './entities/property.entity';
 import { PrismaService } from '../../prisma/client/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, Property } from '@prisma/client';
 
 @Injectable()
 export class PropertiesService {

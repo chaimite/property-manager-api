@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesController } from './properties.controller';
-import { PropertiesService } from './properties.service';
+import { PropertyStatus, PropertyType } from '@prisma/client';
 
+import { PropertiesService } from './properties.service';
 import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
 import { CreatePropertyDto } from './dto/create-property.dto';
-import { PropertyStatus, PropertyType } from './enums/property.enums';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 
 const propertyArrayMock = ARRAY_OF_PROPERTIES;
@@ -65,8 +65,8 @@ describe('PropertiesController', () => {
 
   describe('findOneProperty', () => {
     it('should return a single property', async () => {
-      expect(await controller.findOneProperty(1)).toEqual(onePropertyMock);
-      expect(service.findProperty).toHaveBeenCalledWith({ id: 1 });
+      expect(await controller.findOneProperty('1')).toEqual(onePropertyMock);
+      expect(service.findProperty).toHaveBeenCalledWith({ id: '1' });
     });
   });
 
@@ -75,20 +75,20 @@ describe('PropertiesController', () => {
       const updatePropertyDto: UpdatePropertyDto = {
         description: 'Updated description',
       };
-      expect(await controller.updateOneProperty(1, updatePropertyDto)).toEqual(
-        onePropertyMock,
-      );
+      expect(
+        await controller.updateOneProperty('1', updatePropertyDto),
+      ).toEqual(onePropertyMock);
       expect(service.updateProperty).toHaveBeenCalledWith({
         data: { description: 'Updated description' },
-        where: { id: 1 },
+        where: { id: '1' },
       });
     });
   });
 
   describe('removeOneProperty', () => {
     it('should remove a property', async () => {
-      expect(await controller.removeOneProperty(1)).toEqual({ affected: 1 });
-      expect(service.removeProperty).toHaveBeenCalledWith({ id: 1 });
+      expect(await controller.removeOneProperty('1')).toEqual({ affected: 1 });
+      expect(service.removeProperty).toHaveBeenCalledWith({ id: '1' });
     });
   });
 });

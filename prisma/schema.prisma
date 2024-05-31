@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Property {
-  id                 Int                  @id(map: "PK_d80743e6191258a5003d5843b4f") @default(autoincrement())
+  id                 String               @id(map: "PK_d80743e6191258a5003d5843b4f") @default(uuid())
   description        String               @db.VarChar(90)
   type               PropertyType
   status             PropertyStatus 
