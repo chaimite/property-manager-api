@@ -8,13 +8,15 @@ datasource db {
 }
 
 model Property {
-  id                 String               @id(map: "PK_d80743e6191258a5003d5843b4f") @default(uuid())
+  id                 String               @id @default(uuid())
   description        String               @db.VarChar(90)
   type               PropertyType
   status             PropertyStatus 
   location           String               @db.VarChar(25)
-  contractBeginAt  DateTime               @db.Date
-  contractEndingAt DateTime               @db.Date
+  contractBeginAt    DateTime             @db.Date
+  contractEndingAt   DateTime             @db.Date
+  expenses           Expenses[]           @relation("PropertyExpenses")
+  singleExpense      Expenses?            @relation("SinglePropertyExpense")
 }
 
 enum PropertyStatus {
@@ -27,4 +29,30 @@ enum PropertyStatus {
 enum PropertyType {
   Commercial
   Residential
+}
+
+model Expenses {
+  id                 String               @id @default(uuid())
+  name               String               @db.VarChar(90)
+  description        String               @db.VarChar(150)
+  type               ExpenseType
+  status             ExpenseStatus 
+  yearOfExpense      DateTime             @db.Date
+  paymentDate        DateTime             @db.Date
+  properties         Property[]           @relation("PropertyExpenses")
+  property           Property             @relation(fields: [propertyId], references: [id], name: "SinglePropertyExpense")
+  propertyId         String               @unique
+}
+
+enum ExpenseType {
+  MunicipalTax
+  Insurance
+  Other
+  Condominium
+  ExtraCondominium
+}
+
+enum ExpenseStatus {
+  Paid
+  Overdue
 }
