@@ -8,35 +8,40 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ExpensesService } from './expenses.service';
-import { CreateExpenseDto } from './dto/create-expense.dto';
-import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { Expenses, Prisma } from '@prisma/client';
 
 @Controller('expenses')
 export class ExpensesController {
   constructor(private readonly expensesService: ExpensesService) {}
 
   @Post()
-  create(@Body() createExpenseDto: CreateExpenseDto) {
-    return this.expensesService.create(createExpenseDto);
+  async create(@Body() expense: Prisma.ExpensesCreateInput): Promise<Expenses> {
+    return await this.expensesService.createExpense(expense);
   }
 
   @Get()
-  findAll() {
-    return this.expensesService.findAll();
+  async findAllExpenses(): Promise<Expenses[]> {
+    return await this.expensesService.findAllExpenses();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.expensesService.findOne(+id);
+  async findOneExperience(@Param('id') id: string) {
+    return await this.expensesService.findExpense({ id });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExpenseDto: UpdateExpenseDto) {
-    return this.expensesService.update(+id, updateExpenseDto);
+  async updateOneExpense(
+    @Param('id') id: string,
+    @Body() updateExpense: Prisma.ExpensesUpdateInput,
+  ) {
+    return await this.expensesService.updateExpense({
+      where: { id },
+      data: updateExpense,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.expensesService.remove(+id);
+  async removeOneProperty(@Param('id') id: string) {
+    return this.expensesService.removeExpense({ id });
   }
 }
