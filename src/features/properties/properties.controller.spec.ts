@@ -1,23 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesController } from './properties.controller';
-import { PropertyStatus, PropertyType } from '@prisma/client';
+import { PropertyStatus, PropertyType, Prisma } from '@prisma/client';
 
 import { PropertiesService } from './properties.service';
 import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../../mocks/mock-data';
-import { CreatePropertyDto } from './dto/create-property.dto';
-import { UpdatePropertyDto } from './dto/update-property.dto';
+import { PrismaService } from '../../../prisma/client/prisma.service';
 
 const propertyArrayMock = ARRAY_OF_PROPERTIES;
 const onePropertyMock = SINGLE_PROPERTY;
 
-describe('PropertiesController', () => {
+fdescribe('PropertiesController', () => {
   let controller: PropertiesController;
   let service: PropertiesService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let prisma: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PropertiesController],
       providers: [
+        PrismaService,
         {
           provide: PropertiesService,
           useValue: {
@@ -30,7 +32,7 @@ describe('PropertiesController', () => {
         },
       ],
     }).compile();
-
+    prisma = module.get<PrismaService>(PrismaService);
     controller = module.get<PropertiesController>(PropertiesController);
     service = module.get<PropertiesService>(PropertiesService);
   });
@@ -41,7 +43,7 @@ describe('PropertiesController', () => {
 
   describe('create', () => {
     it('should create a property', async () => {
-      const createPropertyDto: CreatePropertyDto = {
+      const createPropertyDto: Prisma.PropertyCreateInput = {
         description: 'Test property',
         location: 'Test location',
         status: PropertyStatus.Rented,
@@ -72,7 +74,7 @@ describe('PropertiesController', () => {
 
   describe('updateOneProperty', () => {
     it('should update a property', async () => {
-      const updatePropertyDto: UpdatePropertyDto = {
+      const updatePropertyDto: Prisma.PropertyUpdateInput = {
         description: 'Updated description',
       };
       expect(
