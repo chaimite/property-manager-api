@@ -15,8 +15,7 @@ model Property {
   location           String               @db.VarChar(25)
   contractBeginAt    DateTime             @db.Date
   contractEndingAt   DateTime             @db.Date
-  expenses           Expenses[]           @relation("PropertyExpenses")
-  singleExpense      Expenses?            @relation("SinglePropertyExpense")
+  expenses           Expenses[]
 }
 
 enum PropertyStatus {
@@ -39,9 +38,8 @@ model Expenses {
   status             ExpenseStatus 
   yearOfExpense      DateTime             @db.Date
   paymentDate        DateTime             @db.Date
-  properties         Property[]           @relation("PropertyExpenses")
-  property           Property             @relation(fields: [propertyId], references: [id], name: "SinglePropertyExpense")
-  propertyId         String               @unique
+  property           Property             @relation(fields: [propertyId], references: [id])
+  propertyId         String               
 }
 
 enum ExpenseType {
