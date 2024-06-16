@@ -24,7 +24,7 @@ export class ExpensesService {
     });
     if (!result) {
       throw new NotFoundException(
-        `Could not find expense with id ${expensesWhereUniqueInput}`,
+        `Could not find expense with id ${expensesWhereUniqueInput.id}`,
       );
     }
     return result;
