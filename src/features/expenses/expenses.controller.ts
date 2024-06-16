@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExpensesService } from './expenses.service';
@@ -31,8 +32,14 @@ export class ExpensesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Finds a specific expense' })
-  async findOneExperience(@Param('id') id: string) {
+  async findOneExpense(@Param('id') id: string) {
     return await this.expensesService.findExpense({ id });
+  }
+
+  @Get('year/:year')
+  @ApiOperation({ summary: 'Finds all expenses by year' })
+  async findExpensesByYear(@Param('year', ParseIntPipe) year: number) {
+    return await this.expensesService.findAllExpensesByYear(year);
   }
 
   @Patch(':id')

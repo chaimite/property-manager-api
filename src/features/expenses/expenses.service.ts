@@ -16,6 +16,20 @@ export class ExpensesService {
     return await this.prisma.expenses.findMany();
   }
 
+  async findAllExpensesByYear(year: number): Promise<Expenses[]> {
+    const startDate = new Date(Date.UTC(year, 0, 1));
+    const endDate = new Date(Date.UTC(year + 1, 0, 1));
+
+    return await this.prisma.expenses.findMany({
+      where: {
+        paymentDate: {
+          gte: startDate.toISOString(),
+          lte: endDate.toISOString(),
+        },
+      },
+    });
+  }
+
   async findExpense(
     expensesWhereUniqueInput: Prisma.ExpensesWhereUniqueInput,
   ): Promise<Expenses> {
