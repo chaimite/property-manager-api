@@ -16,6 +16,7 @@ model Property {
   contractBeginAt    DateTime             @db.Date
   contractEndingAt   DateTime             @db.Date
   expenses           Expenses[]
+  income             Income[]
 }
 
 enum PropertyStatus {
@@ -54,4 +55,26 @@ enum ExpenseType {
 enum ExpenseStatus {
   Paid
   Overdue
+}
+
+model Income {
+  id                 String               @id @default(uuid())
+  name               String?              @db.VarChar(90)
+  description        String?              @db.VarChar(150)
+  type               IncomeType?
+  status             IncomeStatus
+  property           Property             @relation(fields: [propertyId], references: [id])
+  propertyId         String  
+  value              Decimal?             @db.Decimal(19,4)
+  paymentDate        DateTime             @db.Date
+}
+
+enum IncomeType {
+  Rent
+  Other
+}
+
+enum IncomeStatus {
+  Received
+  NotReceived
 }
