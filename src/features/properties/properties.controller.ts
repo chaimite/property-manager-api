@@ -10,8 +10,7 @@ import {
 import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 
 import { PropertiesService } from './properties.service';
-import { CreatePropertyDto } from './dto/create-property.dto';
-import { UpdatePropertyDto } from './dto/update-property.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('properties')
 export class PropertiesController {
@@ -20,7 +19,7 @@ export class PropertiesController {
   @Post()
   @ApiCreatedResponse()
   @ApiOperation({ summary: 'Create a property to be managed' })
-  async create(@Body() createPropertyDto: CreatePropertyDto) {
+  async create(@Body() createPropertyDto: Prisma.PropertyCreateInput) {
     return await this.propertiesService.createProperty(createPropertyDto);
   }
 
@@ -40,7 +39,7 @@ export class PropertiesController {
   @ApiOperation({ summary: 'Patches data in managed property' })
   async updateOneProperty(
     @Param('id') id: string,
-    @Body() updatePropertyDto: UpdatePropertyDto,
+    @Body() updatePropertyDto: Prisma.PropertyUpdateInput,
   ) {
     return await this.propertiesService.updateProperty({
       where: { id },

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesService } from './properties.service';
-import { PrismaService } from '../../prisma/client/prisma.service';
-import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
+import { PrismaService } from '../../../prisma/client/prisma.service';
+import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../../mocks/mock-data';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { NotFoundException } from '@nestjs/common';

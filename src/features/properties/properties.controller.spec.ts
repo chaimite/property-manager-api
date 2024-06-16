@@ -3,7 +3,7 @@ import { PropertiesController } from './properties.controller';
 import { PropertyStatus, PropertyType } from '@prisma/client';
 
 import { PropertiesService } from './properties.service';
-import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../mocks/mock-data';
+import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../../mocks/mock-data';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 
