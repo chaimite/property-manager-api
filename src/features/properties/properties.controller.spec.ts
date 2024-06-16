@@ -9,7 +9,7 @@ import { PrismaService } from '../../../prisma/client/prisma.service';
 const propertyArrayMock = ARRAY_OF_PROPERTIES;
 const onePropertyMock = SINGLE_PROPERTY;
 
-fdescribe('PropertiesController', () => {
+describe('PropertiesController', () => {
   let controller: PropertiesController;
   let service: PropertiesService;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

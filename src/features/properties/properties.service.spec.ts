@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesService } from './properties.service';
 import { PrismaService } from '../../../prisma/client/prisma.service';
 import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../../mocks/mock-data';
-import { CreatePropertyDto } from './dto/create-property.dto';
-import { UpdatePropertyDto } from './dto/update-property.dto';
 import { NotFoundException } from '@nestjs/common';
 import { PropertyStatus, PropertyType, Prisma } from '@prisma/client';
 
@@ -52,7 +50,7 @@ describe('PropertiesService', () => {
 
   describe('createProperty', () => {
     it('should create a property', async () => {
-      const createPropertyDto: CreatePropertyDto = {
+      const createPropertyDto: Prisma.PropertyCreateInput = {
         description: 'Test property',
         location: 'Test location',
         status: PropertyStatus.AvailableToRent,
@@ -93,7 +91,7 @@ describe('PropertiesService', () => {
 
   describe('updateProperty', () => {
     it('should update a property', async () => {
-      const updatePropertyDto: UpdatePropertyDto = {
+      const updatePropertyDto: Prisma.PropertyUpdateInput = {
         description: 'Updated description',
         location: 'Updated location',
         status: SINGLE_PROPERTY.status,
