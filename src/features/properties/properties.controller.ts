@@ -7,11 +7,12 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { PropertiesService } from './properties.service';
 import { Prisma } from '@prisma/client';
 
+@ApiTags('properties')
 @Controller('properties')
 export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}

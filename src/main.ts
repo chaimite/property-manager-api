@@ -11,7 +11,6 @@ async function bootstrap() {
     .setTitle('Property manager')
     .setDescription('The property manager API')
     .setVersion('1.0')
-    .addTag('properties')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
