@@ -4,8 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PropertiesModule } from './properties/properties.module';
 import { PrismaModule } from '../prisma/client/prisma.module';
-import { ExpensesModule } from './expenses/expenses.module';
-import { IncomeModule } from './income/income.module';
+import { ExpensesModule } from './features/expenses/expenses.module';
+import { IncomeModule } from './features/income/income.module';
 
 @Module({
   imports: [
