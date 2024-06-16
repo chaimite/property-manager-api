@@ -9,14 +9,8 @@ export class PropertiesService {
   async createProperty(data: Prisma.PropertyCreateInput): Promise<Property> {
     const formattedData = {
       ...data,
-      contractBeginAt:
-        typeof data.contractBeginAt === 'string'
-          ? (this.formatDate(data.contractBeginAt) as unknown as string)
-          : data.contractBeginAt,
-      contractEndingAt:
-        typeof data.contractEndingAt === 'string'
-          ? (this.formatDate(data.contractEndingAt) as unknown as string)
-          : data.contractEndingAt,
+      contractBeginAt: new Date(data.contractBeginAt),
+      contractEndingAt: new Date(data.contractEndingAt),
     };
     return await this.prisma.property.create({
       data: formattedData,
@@ -58,9 +52,5 @@ export class PropertiesService {
   async removeProperty(where: Prisma.PropertyWhereUniqueInput): Promise<void> {
     await this.findProperty(where);
     await this.prisma.property.delete({ where });
-  }
-
-  private formatDate(dateString: string): Date {
-    return new Date(`${dateString}T00:00:00.000Z`);
   }
 }
