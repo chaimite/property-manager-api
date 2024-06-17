@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PropertiesModule } from './features/properties/properties.module';
 import { PrismaModule } from '../prisma/client/prisma.module';
 import { ExpensesModule } from './features/expenses/expenses.module';
 import { IncomeModule } from './features/income/income.module';
+import { GoogleStrategyModule } from './features/login/strategy/google.strategy.module';
 
 @Module({
   imports: [
@@ -16,8 +15,7 @@ import { IncomeModule } from './features/income/income.module';
     PrismaModule,
     ExpensesModule,
     IncomeModule,
+    GoogleStrategyModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
