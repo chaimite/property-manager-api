@@ -1,5 +1,6 @@
 //src/auth/auth.service.ts
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -7,6 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../../prisma/client/prisma.service';
 import { AuthEntity } from './entity/auth.entitty';
+import { RegisterDto } from '../dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,5 +38,32 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign({ userId: user.id }),
     };
+  }
+
+  async register(registerDto: RegisterDto): Promise<string> {
+    const { email, firstName, lastName, password } = registerDto;
+
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('Email already in use');
+    }
+
+    try {
+      await this.prisma.user.create({
+        data: {
+          email,
+          firstName,
+          lastName,
+          password,
+        },
+      });
+    } catch (error) {
+      throw new Error(`Something went wrong when creating the user.  ${error}`);
+    }
+
+    return 'User successfully registered';
   }
 }
