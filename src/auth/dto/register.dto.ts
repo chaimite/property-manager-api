@@ -1,4 +1,3 @@
-// src/dto/register.dto.ts
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class RegisterDto {
