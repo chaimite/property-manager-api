@@ -6,7 +6,7 @@ import { ExpensesModule } from './features/expenses/expenses.module';
 import { IncomeModule } from './features/income/income.module';
 import { GoogleStrategyModule } from './features/login/strategy/google.strategy.module';
 import { PassportModule } from '@nestjs/passport';
-import { AuthModule } from './auth/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
