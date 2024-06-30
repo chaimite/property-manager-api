@@ -17,6 +17,8 @@ model Property {
   contractEndingAt   DateTime             @db.Date
   expenses           Expenses[]
   income             Income[]
+  property           User?                @relation(fields: [propertyId], references: [id])
+  propertyId         String               
 }
 
 enum PropertyStatus {
@@ -86,6 +88,7 @@ model User {
   lastName          String?
   password          String?
   tokens            Token[]
+  properties        Property[]
 }
 
 model Token {
