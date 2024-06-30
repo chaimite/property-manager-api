@@ -78,3 +78,31 @@ enum IncomeStatus {
   Received
   NotReceived
 }
+
+model User {
+  id                String               @id @default(uuid())
+  email             String               @unique
+  firstName         String?
+  lastName          String?
+  tokens            Token[]
+}
+
+model Token {
+  id                String               @id @default(uuid())
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  type              TokenType
+  emailToken        String?              @unique//used only for email tokens
+  valid             Boolean              @default(true)
+  expirtation       DateTime
+
+  user              User                 @relation(fields: [userId], references: [id])
+  userId            String
+}
+
+enum TokenType {
+  email // short lived token sent to user's email
+  Api
+}
+
+
