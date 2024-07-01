@@ -8,6 +8,7 @@ export const SINGLE_PROPERTY: Property = {
   type: PropertyType.Residential,
   contractBeginAt: new Date(),
   contractEndingAt: new Date(),
+  userId: '2',
 };
 
 const PROPERTIES: Property[] = [
@@ -19,6 +20,7 @@ const PROPERTIES: Property[] = [
     type: PropertyType.Residential,
     contractBeginAt: new Date(),
     contractEndingAt: new Date(),
+    userId: '2',
   },
   {
     id: '3',
@@ -28,6 +30,7 @@ const PROPERTIES: Property[] = [
     type: PropertyType.Residential,
     contractBeginAt: new Date(),
     contractEndingAt: new Date(),
+    userId: '2',
   },
   {
     id: '4',
@@ -37,6 +40,7 @@ const PROPERTIES: Property[] = [
     type: PropertyType.Residential,
     contractBeginAt: new Date(),
     contractEndingAt: new Date(),
+    userId: '2',
   },
 ];
 
