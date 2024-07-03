@@ -7,10 +7,18 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { PropertiesService } from './properties.service';
-import { Prisma } from '@prisma/client';
+import { CreatePropertyDto } from './dto/create-property.dto';
+import { UpdatePropertyDto } from './dto/update-property.dto';
+import { PropertyStatus, PropertyType } from '@prisma/client';
 
 @ApiTags('properties')
 @Controller('properties')
@@ -19,8 +27,11 @@ export class PropertiesController {
 
   @Post()
   @ApiCreatedResponse()
+  @ApiOkResponse({ type: CreatePropertyDto })
+  @ApiQuery({ name: 'type', enum: PropertyType })
+  @ApiQuery({ name: 'status', enum: PropertyStatus })
   @ApiOperation({ summary: 'Create a property to be managed' })
-  async create(@Body() createPropertyDto: Prisma.PropertyCreateInput) {
+  async create(@Body() createPropertyDto: CreatePropertyDto) {
     return await this.propertiesService.createProperty(createPropertyDto);
   }
 
@@ -33,24 +44,21 @@ export class PropertiesController {
   @Get(':id')
   @ApiOperation({ summary: 'Finds a managed property' })
   async findOneProperty(@Param('id') id: string) {
-    return await this.propertiesService.findProperty({ id });
+    return await this.propertiesService.findProperty(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Patches data in managed property' })
   async updateOneProperty(
     @Param('id') id: string,
-    @Body() updatePropertyDto: Prisma.PropertyUpdateInput,
+    @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    return await this.propertiesService.updateProperty({
-      where: { id },
-      data: updatePropertyDto,
-    });
+    return await this.propertiesService.updateProperty(id, updatePropertyDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes a managed property' })
   async removeOneProperty(@Param('id') id: string) {
-    return await this.propertiesService.removeProperty({ id });
+    return await this.propertiesService.removeProperty(id);
   }
 }

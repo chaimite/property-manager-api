@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesController } from './properties.controller';
-import { PropertyStatus, PropertyType, Prisma } from '@prisma/client';
+import { PropertyStatus, PropertyType } from '@prisma/client';
 
 import { PropertiesService } from './properties.service';
 import { SINGLE_PROPERTY, ARRAY_OF_PROPERTIES } from '../../mocks/mock-data';
 import { PrismaService } from '../../../prisma/client/prisma.service';
+import { CreatePropertyDto } from './dto/create-property.dto';
+import { UpdatePropertyDto } from './dto/update-property.dto';
 
 const propertyArrayMock = ARRAY_OF_PROPERTIES;
 const onePropertyMock = SINGLE_PROPERTY;
@@ -43,7 +45,7 @@ describe('PropertiesController', () => {
 
   describe('create', () => {
     it('should create a property', async () => {
-      const createPropertyDto: Prisma.PropertyCreateInput = {
+      const createPropertyDto: CreatePropertyDto = {
         description: 'Test property',
         location: 'Test location',
         status: PropertyStatus.Rented,
@@ -68,21 +70,20 @@ describe('PropertiesController', () => {
   describe('findOneProperty', () => {
     it('should return a single property', async () => {
       expect(await controller.findOneProperty('1')).toEqual(onePropertyMock);
-      expect(service.findProperty).toHaveBeenCalledWith({ id: '1' });
+      expect(service.findProperty).toHaveBeenCalledWith('1');
     });
   });
 
   describe('updateOneProperty', () => {
     it('should update a property', async () => {
-      const updatePropertyDto: Prisma.PropertyUpdateInput = {
+      const updatePropertyDto: UpdatePropertyDto = {
         description: 'Updated description',
       };
       expect(
         await controller.updateOneProperty('1', updatePropertyDto),
       ).toEqual(onePropertyMock);
-      expect(service.updateProperty).toHaveBeenCalledWith({
-        data: { description: 'Updated description' },
-        where: { id: '1' },
+      expect(service.updateProperty).toHaveBeenCalledWith('1', {
+        description: 'Updated description',
       });
     });
   });
@@ -90,7 +91,7 @@ describe('PropertiesController', () => {
   describe('removeOneProperty', () => {
     it('should remove a property', async () => {
       expect(await controller.removeOneProperty('1')).toEqual({ affected: 1 });
-      expect(service.removeProperty).toHaveBeenCalledWith({ id: '1' });
+      expect(service.removeProperty).toHaveBeenCalledWith('1');
     });
   });
 });

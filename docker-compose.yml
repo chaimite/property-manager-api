@@ -11,7 +11,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     command: ["postgres", "-c", "listen_addresses=0.0.0.0"]
-  #docker compose up db
+  # docker compose up db
   app:
     build:
       context: .
@@ -39,7 +39,7 @@ services:
       - '5050:80'
     depends_on:
       - db
-#docker compose up pgadmin
+# docker compose up pgadmin
 #on pgadmin 
 #host: db 
 #user: postgres 

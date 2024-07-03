@@ -1,16 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/client/prisma.service';
 import { Prisma, Property } from '@prisma/client';
+import { CreatePropertyDto } from './dto/create-property.dto';
+import { UpdatePropertyDto } from './dto/update-property.dto';
 
 @Injectable()
 export class PropertiesService {
   constructor(private prisma: PrismaService) {}
 
-  async createProperty(data: Prisma.PropertyCreateInput): Promise<Property> {
-    const formattedData = {
-      ...data,
-      contractBeginAt: new Date(data.contractBeginAt),
-      contractEndingAt: new Date(data.contractEndingAt),
+  async createProperty(
+    createPropertyDto: CreatePropertyDto,
+  ): Promise<Property> {
+    const { contractBeginAt, contractEndingAt, userId, ...rest } =
+      createPropertyDto;
+    const formattedData: Prisma.PropertyCreateInput = {
+      ...rest,
+      contractBeginAt: new Date(contractBeginAt),
+      contractEndingAt: new Date(contractEndingAt),
+      user: userId ? { connect: { id: userId } } : undefined,
     };
     return await this.prisma.property.create({
       data: formattedData,
@@ -21,36 +28,39 @@ export class PropertiesService {
     return await this.prisma.property.findMany();
   }
 
-  async findProperty(
-    propertyWhereUniqueInput: Prisma.PropertyWhereUniqueInput,
-  ): Promise<Property> {
+  async findProperty(id: string): Promise<Property> {
     const result = await this.prisma.property.findUnique({
-      where: propertyWhereUniqueInput,
+      where: { id },
     });
     if (!result) {
-      throw new NotFoundException(
-        `Could not find property with id ${propertyWhereUniqueInput.id}`,
-      );
+      throw new NotFoundException(`Could not find property with id ${id}`);
     }
     return result;
   }
 
-  async updateProperty(params: {
-    where: Prisma.PropertyWhereUniqueInput;
-    data: Prisma.PropertyUpdateInput;
-  }): Promise<void> {
-    const { where, data } = params;
+  async updateProperty(
+    id: string,
+    updatePropertyDto: UpdatePropertyDto,
+  ): Promise<void> {
+    const existingProperty = await this.findProperty(id);
 
-    await this.findProperty(where);
+    if (!existingProperty) {
+      throw new NotFoundException(`Could not find property with id ${id}`);
+    }
 
     await this.prisma.property.update({
-      data,
-      where,
+      where: { id },
+      data: updatePropertyDto,
     });
   }
 
-  async removeProperty(where: Prisma.PropertyWhereUniqueInput): Promise<void> {
-    await this.findProperty(where);
-    await this.prisma.property.delete({ where });
+  async removeProperty(id: string): Promise<void> {
+    const existingProperty = await this.findProperty(id);
+
+    if (!existingProperty) {
+      throw new NotFoundException(`Could not find property with id ${id}`);
+    }
+
+    await this.prisma.property.delete({ where: { id } });
   }
 }
