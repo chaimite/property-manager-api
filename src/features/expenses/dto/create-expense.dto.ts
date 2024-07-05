@@ -7,6 +7,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { ExpenseType, ExpenseStatus } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export class CreateExpenseDto {
   @ApiProperty({ description: 'Name of the expense' })
@@ -30,12 +31,12 @@ export class CreateExpenseDto {
   @ApiProperty({ description: 'Year of the expense' })
   @IsNotEmpty()
   @IsDateString()
-  yearOfExpense: string;
+  yearOfExpense: Date;
 
   @ApiProperty({ description: 'Payment date of the expense' })
   @IsNotEmpty()
   @IsDateString()
-  paymentDate: string;
+  paymentDate: Date;
 
   @ApiProperty({ description: 'ID of the associated property' })
   @IsNotEmpty()
@@ -45,5 +46,5 @@ export class CreateExpenseDto {
   @ApiProperty({ description: 'Value of the expense' })
   @IsNotEmpty()
   @IsNumber()
-  value: number;
+  value: Decimal;
 }

@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExpensesController } from './expenses.controller';
 import { ExpensesService } from './expenses.service';
-import { ExpenseStatus, ExpenseType, Expenses, Prisma } from '@prisma/client';
+import { ExpenseStatus, ExpenseType, Expenses } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/library';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { CreateExpenseDto } from './dto/create-expense.dto';
 
 describe('ExpensesController', () => {
   let controller: ExpensesController;
@@ -37,7 +39,7 @@ describe('ExpensesController', () => {
 
   describe('create', () => {
     it('should create a new expense', async () => {
-      const expenseData: Prisma.ExpensesCreateInput = {
+      const expenseData: CreateExpenseDto = {
         description: '',
         name: '',
         paymentDate: new Date(),
@@ -45,7 +47,7 @@ describe('ExpensesController', () => {
         type: ExpenseType.Condominium,
         value: new Decimal(100),
         yearOfExpense: new Date(2024),
-        property: null,
+        propertyId: 'some-id',
       };
 
       const createdExpense: Expenses = {
@@ -149,7 +151,7 @@ describe('ExpensesController', () => {
 
   describe('updateOneExpense', () => {
     it('should update an existing expense', async () => {
-      const updateData: Prisma.ExpensesUpdateInput = { value: 600 };
+      const updateData: UpdateExpenseDto = { value: 600 };
 
       mockExpensesService.updateExpense.mockResolvedValue(null);
 

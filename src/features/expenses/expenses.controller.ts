@@ -10,7 +10,9 @@ import {
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExpensesService } from './expenses.service';
-import { Expenses, Prisma } from '@prisma/client';
+import { Expenses } from '@prisma/client';
+import { CreateExpenseDto } from './dto/create-expense.dto';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
 
 @ApiTags('expenses')
 @Controller('expenses')
@@ -20,7 +22,7 @@ export class ExpensesController {
   @Post()
   @ApiCreatedResponse()
   @ApiOperation({ summary: 'Adds an expense to a property' })
-  async create(@Body() expense: Prisma.ExpensesCreateInput): Promise<Expenses> {
+  async create(@Body() expense: CreateExpenseDto): Promise<Expenses> {
     return await this.expensesService.createExpense(expense);
   }
 
@@ -33,7 +35,7 @@ export class ExpensesController {
   @Get(':id')
   @ApiOperation({ summary: 'Finds a specific expense' })
   async findOneExpense(@Param('id') id: string) {
-    return await this.expensesService.findExpense({ id });
+    return await this.expensesService.findExpense(id);
   }
 
   @Get('year/:year')
@@ -43,20 +45,20 @@ export class ExpensesController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Patches data in specific expense' })
+  @ApiOperation({ summary: 'Patches data in a specific expense' })
   async updateOneExpense(
     @Param('id') id: string,
-    @Body() updateExpense: Prisma.ExpensesUpdateInput,
+    @Body() updateExpense: UpdateExpenseDto,
   ) {
     return await this.expensesService.updateExpense({
-      where: { id },
-      data: updateExpense,
+      id,
+      updateExpense,
     });
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes expense' })
   async removeOneProperty(@Param('id') id: string) {
-    return this.expensesService.removeExpense({ id });
+    return this.expensesService.removeExpense(id);
   }
 }

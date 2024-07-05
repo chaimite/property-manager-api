@@ -1,14 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, Expenses } from '@prisma/client';
+import { Expenses } from '@prisma/client';
 import { PrismaService } from 'prisma/client/prisma.service';
+import { CreateExpenseDto } from './dto/create-expense.dto';
+import { UpdateExpenseDto } from './dto/update-expense.dto';
 
 @Injectable()
 export class ExpensesService {
   constructor(private prisma: PrismaService) {}
 
-  async createExpense(data: Prisma.ExpensesCreateInput): Promise<Expenses> {
+  async createExpense(CreateExpenseDto: CreateExpenseDto): Promise<Expenses> {
     return await this.prisma.expenses.create({
-      data: data,
+      data: CreateExpenseDto,
     });
   }
 
@@ -30,32 +32,35 @@ export class ExpensesService {
     });
   }
 
-  async findExpense(
-    expensesWhereUniqueInput: Prisma.ExpensesWhereUniqueInput,
-  ): Promise<Expenses> {
+  async findExpense(id: string): Promise<Expenses> {
     const result = await this.prisma.expenses.findUnique({
-      where: expensesWhereUniqueInput,
+      where: { id },
     });
     if (!result) {
-      throw new NotFoundException(
-        `Could not find expense with id ${expensesWhereUniqueInput.id}`,
-      );
+      throw new NotFoundException(`Could not find expense with id ${id}`);
     }
     return result;
   }
 
-  async updateExpense(params: {
-    where: Prisma.ExpensesWhereUniqueInput;
-    data: Prisma.ExpensesUpdateInput;
+  async updateExpense({
+    id,
+    updateExpense,
+  }: {
+    id: string;
+    updateExpense: UpdateExpenseDto;
   }): Promise<void> {
-    const { where, data } = params;
-    await this.findExpense(where);
+    const { ...data } = updateExpense;
 
-    await this.prisma.expenses.update({ data, where });
+    await this.findExpense(id);
+
+    await this.prisma.expenses.update({
+      where: { id },
+      data,
+    });
   }
 
-  async removeExpense(where: Prisma.ExpensesWhereUniqueInput): Promise<void> {
-    await this.findExpense(where);
-    await this.prisma.expenses.delete({ where });
+  async removeExpense(id: string): Promise<void> {
+    await this.findExpense(id);
+    await this.prisma.expenses.delete({ where: { id } });
   }
 }
