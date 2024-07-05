@@ -19,7 +19,7 @@ export class IncomeController {
   constructor(private readonly incomeService: IncomeService) {}
 
   @Post()
-  @ApiCreatedResponse()
+  @ApiCreatedResponse({ type: CreateIncomeDto })
   @ApiOperation({ summary: 'Add income to property' })
   async create(@Body() createIncomeDto: CreateIncomeDto): Promise<Income> {
     return await this.incomeService.createIncome(createIncomeDto);

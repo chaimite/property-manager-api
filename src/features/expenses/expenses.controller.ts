@@ -20,7 +20,7 @@ export class ExpensesController {
   constructor(private readonly expensesService: ExpensesService) {}
 
   @Post()
-  @ApiCreatedResponse()
+  @ApiCreatedResponse({ type: CreateExpenseDto })
   @ApiOperation({ summary: 'Adds an expense to a property' })
   async create(@Body() expense: CreateExpenseDto): Promise<Expenses> {
     return await this.expensesService.createExpense(expense);

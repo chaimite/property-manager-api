@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiQuery,
   ApiTags,
@@ -26,8 +25,7 @@ export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
   @Post()
-  @ApiCreatedResponse()
-  @ApiOkResponse({ type: CreatePropertyDto })
+  @ApiCreatedResponse({ type: CreatePropertyDto })
   @ApiQuery({ name: 'type', enum: PropertyType })
   @ApiQuery({ name: 'status', enum: PropertyStatus })
   @ApiOperation({ summary: 'Create a property to be managed' })

@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { AuthEntity } from './entity/auth.entitty';
 import { RegisterDto } from './dto/register.dto';
@@ -17,7 +17,7 @@ export class AuthController {
   }
 
   @Post('register')
-  @ApiOkResponse({ type: AuthEntity })
+  @ApiCreatedResponse({ type: AuthEntity })
   register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
