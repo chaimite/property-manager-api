@@ -78,6 +78,7 @@ describe('PropertiesController', () => {
     it('should update a property', async () => {
       const updatePropertyDto: UpdatePropertyDto = {
         description: 'Updated description',
+        userId: '1',
       };
       expect(
         await controller.updateOneProperty('1', updatePropertyDto),

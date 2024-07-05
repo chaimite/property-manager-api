@@ -114,7 +114,10 @@ describe('PropertiesService', () => {
       jest.spyOn(prisma.property, 'findUnique').mockResolvedValueOnce(null);
 
       await expect(
-        service.updateProperty('999', { description: 'Updated description' }),
+        service.updateProperty('999', {
+          description: 'Updated description',
+          userId: '',
+        }),
       ).rejects.toThrow(NotFoundException);
     });
   });
