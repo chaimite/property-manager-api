@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IncomeController } from './income.controller';
 import { IncomeService } from './income.service';
 import { Income, IncomeStatus, IncomeType } from '@prisma/client';
-import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { NotFoundException } from '@nestjs/common';
+import { UpdateIncomeDto } from './dto/update-income.dto';
+import { CreateIncomeDto } from './dto/create-income.dto';
 
 describe('IncomeController', () => {
   let controller: IncomeController;
@@ -39,13 +40,11 @@ describe('IncomeController', () => {
 
   describe('create', () => {
     it('should create a new income', async () => {
-      const incomeData: Prisma.IncomeCreateInput = {
+      const incomeData: CreateIncomeDto = {
         value: new Decimal(100),
         paymentDate: new Date('2024-07-01'),
         status: IncomeStatus.Received,
-        property: {
-          connect: { id: 'property-1' },
-        },
+        propertyId: 'some-id',
       };
       const createdIncome: Income = {
         id: '1',
@@ -116,7 +115,7 @@ describe('IncomeController', () => {
 
   describe('update', () => {
     it('should update an existing income', async () => {
-      const updateData: Prisma.IncomeUpdateInput = { value: new Decimal(200) };
+      const updateData: UpdateIncomeDto = { value: new Decimal(200) };
 
       mockIncomeService.updateIncome.mockResolvedValue(null);
 
@@ -145,7 +144,7 @@ describe('IncomeController', () => {
       mockIncomeService.removeIncome.mockResolvedValue(null);
 
       await controller.remove('1');
-      expect(mockIncomeService.removeIncome).toHaveBeenCalledWith({ id: '1' });
+      expect(mockIncomeService.removeIncome).toHaveBeenCalledWith('1');
     });
 
     it('should throw a NotFoundException if income is not found', async () => {

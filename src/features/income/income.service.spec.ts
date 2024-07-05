@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { IncomeService } from './income.service';
-import { Income, IncomeStatus, IncomeType, Prisma } from '@prisma/client';
+import { Income, IncomeStatus, IncomeType } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { PrismaService } from '../../../prisma/client/prisma.service';
+import { CreateIncomeDto } from './dto/create-income.dto';
+import { UpdateIncomeDto } from './dto/update-income.dto';
 
 describe('IncomeService', () => {
   let service: IncomeService;
@@ -34,11 +36,11 @@ describe('IncomeService', () => {
 
   describe('createIncome', () => {
     it('should create a new income', async () => {
-      const incomeData: Prisma.IncomeCreateInput = {
-        value: 100,
+      const incomeData: CreateIncomeDto = {
+        value: new Decimal(100),
         paymentDate: new Date('2024-07-01'),
         status: IncomeStatus.Received,
-        property: null,
+        propertyId: 'some-id',
       };
       const createdIncome: Income = {
         id: '1',
@@ -125,7 +127,7 @@ describe('IncomeService', () => {
         value: new Decimal(1000),
         paymentDate: new Date('2024-07-01'),
       };
-      const updateData: Prisma.IncomeUpdateInput = { value: 200 };
+      const updateData: UpdateIncomeDto = { value: new Decimal(200) };
 
       prisma.income.findUnique = jest.fn().mockResolvedValue(income);
       prisma.income.update = jest.fn().mockResolvedValue(income);
@@ -141,7 +143,10 @@ describe('IncomeService', () => {
       prisma.income.findUnique = jest.fn().mockResolvedValue(null);
 
       await expect(
-        service.updateIncome({ where: { id: '1' }, data: { value: 200 } }),
+        service.updateIncome({
+          where: { id: '1' },
+          data: { value: new Decimal(200) },
+        }),
       ).rejects.toThrow(NotFoundException);
       expect(prisma.income.findUnique).toHaveBeenCalledWith({
         where: { id: 1 },
@@ -165,18 +170,18 @@ describe('IncomeService', () => {
       prisma.income.findUnique = jest.fn().mockResolvedValue(income);
       prisma.income.delete = jest.fn().mockResolvedValue(income);
 
-      await service.removeIncome({ id: '1' });
+      await service.removeIncome('1');
       expect(prisma.income.delete).toHaveBeenCalledWith({ where: { id: 1 } });
     });
 
     it('should throw a NotFoundException if income is not found', async () => {
       prisma.income.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.removeIncome({ id: '1' })).rejects.toThrow(
+      await expect(service.removeIncome('1')).rejects.toThrow(
         NotFoundException,
       );
       expect(prisma.income.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: '1',
       });
     });
   });
