@@ -31,5 +31,5 @@ export class UpdatePropertyDto {
 
   @IsOptional()
   @IsString()
-  userId?: string;
+  userId: string;
 }

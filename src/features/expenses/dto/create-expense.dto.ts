@@ -1,13 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  IsDateString,
-  IsNumber,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsDateString } from 'class-validator';
 import { ExpenseType, ExpenseStatus } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { randomUUID } from 'crypto';
 
 export class CreateExpenseDto {
   @ApiProperty({ description: 'Name of the expense' })
@@ -38,13 +33,15 @@ export class CreateExpenseDto {
   @IsDateString()
   paymentDate: Date;
 
-  @ApiProperty({ description: 'ID of the associated property' })
+  @ApiProperty({
+    description: 'ID of the associated property',
+    example: randomUUID(),
+  })
   @IsNotEmpty()
   @IsString()
   propertyId: string;
 
-  @ApiProperty({ description: 'Value of the expense' })
+  @ApiProperty({ description: 'Value of the expense', example: 125.56 })
   @IsNotEmpty()
-  @IsNumber()
   value: Decimal;
 }

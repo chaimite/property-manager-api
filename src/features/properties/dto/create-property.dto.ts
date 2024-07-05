@@ -2,6 +2,7 @@ import { IsString, IsEnum, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PropertyType, PropertyStatus } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { randomUUID } from 'crypto';
 
 export class CreatePropertyDto {
   @ApiProperty({ example: 'Casa de Alfama' })
@@ -20,7 +21,10 @@ export class CreatePropertyDto {
   @IsString()
   location: string;
 
-  @ApiProperty({ description: 'needs to be a user id to be associated with' })
+  @ApiProperty({
+    description: 'needs to be a user id to be associated with',
+    example: randomUUID(),
+  })
   @IsString()
   userId?: string;
 
