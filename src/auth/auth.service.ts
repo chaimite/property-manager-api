@@ -40,7 +40,7 @@ export class AuthService {
     };
   }
 
-  async register(registerDto: RegisterDto): Promise<string> {
+  async register(registerDto: RegisterDto): Promise<void> {
     const { email, firstName, lastName, password } = registerDto;
 
     const existingUser = await this.prisma.user.findUnique({
@@ -63,7 +63,29 @@ export class AuthService {
     } catch (error) {
       throw new Error(`Something went wrong when creating the user.  ${error}`);
     }
+  }
 
-    return 'User successfully registered';
+  async validateGoogleUser(profile: {
+    email: string;
+    firstName: string;
+    lastName: string;
+  }): Promise<AuthEntity> {
+    let user = await this.prisma.user.findUnique({
+      where: { email: profile.email },
+    });
+
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          email: profile.email,
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+        },
+      });
+    }
+
+    return {
+      accessToken: this.jwtService.sign({ userId: user.id }),
+    };
   }
 }
